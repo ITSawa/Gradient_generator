@@ -1,5 +1,5 @@
 🌈 Gradient Generator
-A simple Vite web application for generating beautiful CSS gradients.
+A simple web application for generating beautiful CSS gradients.
 
 🚀 Getting Started
 Follow these steps to set up and run the project locally.
