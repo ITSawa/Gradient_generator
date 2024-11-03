@@ -9,22 +9,22 @@ Ensure you have Node.js and npm installed on your system.
 
 📦 Installation
 Clone the repository:
-sh
+
 
 git clone https://github.com/ITSawa/Gradient_generator.git
 Navigate to the project directory:
-sh
+
 
 cd Gradient_generator
 Install dependencies:
-sh
+
 
 npm install
 🛠 Usage
 Development Mode
 To run the application in development mode, use:
 
-sh
+
 
 npm run dev
 This will start the Vite development server. Open your browser and navigate to http://localhost:3000 to see the application in action.
@@ -32,7 +32,7 @@ This will start the Vite development server. Open your browser and navigate to h
 Production Build
 To create a production build, use:
 
-sh
+
 
 npm run build
 The build artifacts will be generated in the dist directory. You can serve these static files using any web server.
@@ -40,12 +40,12 @@ The build artifacts will be generated in the dist directory. You can serve these
 🔧 Additional Commands
 Linting:
 
-sh
+
 
 npm run lint
 Formatting:
 
-sh
+
 
 npm run format
 ✨ Features
