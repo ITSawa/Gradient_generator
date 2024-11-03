@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + TS</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="main-header column">
+      <h1 class="gradient-text-title main-header__title">
+        Gradient Generator!
+      </h1>
+      <p>
+        This app is designed to help you create beautiful gradient styles for
+        your text and div elements. Whether you're a web designer or developer,
+        our Gradient Generator provides an easy way to generate and customize
+        gradients to enhance your projects.
+      </p>
+      <div class="row main-header__links">
+        <a href="#about">About</a>
+        <a href="#documentation">Documentation</a>
+        <a href="#contact">Contact</a>
+        <a href="https://github.com/ITSawa">GitHub</a>
+      </div>
+
+      <a href="#generator" class="gradient-animation">
+        Create your gradient!
+      </a>
+    </header>
+
+    <!-- main -->
+    <main class="main" id="generator">
+      <div class="gradient-generator">
+        <div class="gradient-generator__title">
+          <h2 class="gradient-text-title">Gradient Generator</h2>
+        </div>
+        <div class="generator-options">
+          <div>
+            <label for="gradient-type">Select Gradient Type:</label>
+            <select id="gradient-type">
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="gradient-element">Select Element:</label>
+            <select id="gradient-element">
+              <option value="text">Text</option>
+              <option value="div">Div</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="color-options">
+          <input type="color" id="color1" name="color1" value="#ff0000" />
+          <input type="color" id="color2" name="color2" value="#0000ff" />
+          <button id="add-color">+</button>
+        </div>
+
+        <div class="gradient-controls">
+          <label for="angle">Angle:</label>
+          <input
+            type="range"
+            id="angle"
+            name="angle"
+            min="0"
+            max="360"
+            value="90"
+            step="1"
+          />
+          <span id="angle-value">90°</span>
+          <button id="generate-gradient">Generate Gradient</button>
+        </div>
+
+        <div class="gradient-preview">
+          <h4>Preview</h4>
+          <div id="gradient-preview-box" class="gradient-box">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo
+            asperiores repudiandae quibusdam a placeat atque explicabo eum
+            ratione sint ad?
+          </div>
+        </div>
+
+        <div class="css-code">
+          <h4>CSS Code</h4>
+          <pre id="css-code"></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const angleInput = document.getElementById("angle");
+        const angleValue = document.getElementById("angle-value");
+        const gradientPreviewBox = document.getElementById(
+          "gradient-preview-box"
+        );
+        const cssCode = document.getElementById("css-code");
+        const gradientElement = document.getElementById("gradient-element");
+        const addColorButton = document.getElementById("add-color");
+        const colorOptions = document.querySelector(".color-options");
+
+        angleInput.addEventListener("input", function () {
+          angleValue.textContent = `${angleInput.value}°`;
+        });
+
+        gradientElement.addEventListener("change", function () {
+          resetPreview();
+        });
+
+        addColorButton.addEventListener("click", function () {
+          const newColorInput = document.createElement("input");
+          newColorInput.type = "color";
+          newColorInput.value = "#0000ff"; // default value
+          colorOptions.insertBefore(newColorInput, addColorButton);
+        });
+
+        document
+          .getElementById("generate-gradient")
+          .addEventListener("click", function () {
+            const type = document.getElementById("gradient-type").value;
+            const angle = angleInput.value;
+
+            // Сбор всех цветов
+            const colorInputs = colorOptions.querySelectorAll(
+              "input[type='color']"
+            );
+            const colors = Array.from(colorInputs).map((input) => input.value);
+
+            const gradient =
+              type === "linear"
+                ? `linear-gradient(${angle}deg, ${colors.join(", ")})`
+                : `radial-gradient(circle, ${colors.join(", ")})`;
+
+            if (gradientElement.value === "text") {
+              applyTextGradient(gradient);
+            } else {
+              applyDivGradient(gradient);
+            }
+          });
+
+        function resetPreview() {
+          gradientPreviewBox.style.background = "none";
+          gradientPreviewBox.style.color = "initial";
+          gradientPreviewBox.classList.remove("gradient-text");
+          gradientPreviewBox.textContent =
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo asperiores repudiandae quibusdam a placeat atque explicabo eum ratione sint ad?";
+          cssCode.textContent = "";
+        }
+
+        function applyTextGradient(gradient) {
+          gradientPreviewBox.style.background = "none"; // Удаление фона
+          gradientPreviewBox.style.backgroundImage = gradient;
+          gradientPreviewBox.classList.add("gradient-text");
+          gradientPreviewBox.style.webkitBackgroundClip = "text";
+          gradientPreviewBox.style.backgroundClip = "text";
+          gradientPreviewBox.style.webkitTextFillColor = "transparent";
+          cssCode.textContent = `
+.gradient-text {
+  display: inline-block;
+  background: ${gradient};
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}`;
+        }
+
+        function applyDivGradient(gradient) {
+          gradientPreviewBox.style.backgroundImage = gradient;
+          gradientPreviewBox.style.backgroundClip = "border-box";
+          gradientPreviewBox.classList.remove("gradient-text");
+          gradientPreviewBox.style.color = "white";
+          cssCode.textContent = `background-image: ${gradient};`;
+        }
+      });
+
+      const showByMaxHeight = (id) => {
+        const element = document.getElementById(id);
+        const currentHeight = getComputedStyle(element).height;
+        element.style.height =
+          currentHeight !== "0px" ? "0" : `${element.scrollHeight}px`;
+      };
+    </script>
+
+    <footer class="main-footer column">
+      <div class="about" id="about">
+        <button
+          class="main-footer__button"
+          onclick="showByMaxHeight('about-frame')"
+        >
+          <h2>About</h2>
+        </button>
+        <div id="about-frame">
+          <p>
+            Our Gradient Generator is a powerful tool designed to assist web
+            developers in creating stunning gradient styles for both text and
+            div elements. Whether you are working on a website design or a web
+            application, our generator provides a simple and efficient way to
+            create and customize gradients, enhancing the visual appeal of your
+            projects.
+          </p>
+        </div>
+      </div>
+      <div class="documentation" id="documentation">
+        <button
+          class="main-footer__button"
+          onclick="showByMaxHeight('documentation-frame')"
+        >
+          <h2>Documentation</h2>
+        </button>
+        <div id="documentation-frame">
+          <p>
+            The Gradient Generator is easy to use. Follow these steps to create
+            your gradients:
+          </p>
+          <ol>
+            <li>
+              Select the type of gradient you want to create: linear or radial.
+            </li>
+            <li>
+              Choose the colors for your gradient. You can select multiple
+              colors to create complex gradients.
+            </li>
+            <li>
+              Adjust the direction and angle for linear gradients, or the shape
+              and size for radial gradients.
+            </li>
+            <li>
+              Preview your gradient in the display area to see how it looks.
+            </li>
+            <li>
+              Once you are satisfied with the gradient, copy the generated CSS
+              code and use it in your project.
+            </li>
+          </ol>
+          <p>
+            With these simple steps, you can create beautiful gradients for your
+            text and div elements to enhance the design of your web pages.
+          </p>
+        </div>
+      </div>
+      <div class="contact" id="contact">
+        <h2>Contact</h2>
+        <p>
+          If you have any questions, suggestions, or need support, feel free to
+          reach out to us. We are always here to help you with any issues or
+          feedback you may have.
+        </p>
+        <a href="mailto:support@example.com">svk@gmail.com</a>
+      </div>
+      <div class="social">
+        <h2>Follow Us</h2>
+        <p>
+          Stay connected and get the latest updates by following us on social
+          media.
+        </p>
+        <div class="row">
+          <a href="">Twitter</a>
+          <a href="">Facebook</a>
+          <a href="">GitHub</a>
+          <a href="">LinkedIn</a>
+        </div>
+      </div>
+
+      <p class="copyright">
+        &copy; 2023 Gradient Generator. All rights reserved.
+      </p>
+    </footer>
+  </body>
+</html>
